@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -26,7 +28,7 @@ export default function AdminLogin() {
       alert("Login Success");
     } catch (err) {
       console.log("Login Failed", err);
-      setError("Login Failed");
+      setError("Try Again");
     } finally {
       setLoading(false);
       setUsername("");
@@ -34,6 +36,13 @@ export default function AdminLogin() {
       navigate("/");
     }
   };
+
+  const validationSchema = Yup.object({
+    username: Yup.string().required("Username is Required"),
+    password: Yup.string()
+      .min(4, "Password must be at least 4 characters")
+      .required("Password is Required"),
+  });
 
   return (
     <div className="container flex items-center justify-center min-h-screen bg-gray-100">
@@ -45,7 +54,7 @@ export default function AdminLogin() {
         </div>
 
         <h1 className="text-xl font-semibold text-gray-800">
-          Tech Events Admin
+          Event Management Admin
         </h1>
         <p className="text-sm text-gray-500 mb-6">
           Secure login for administrators.
@@ -55,24 +64,21 @@ export default function AdminLogin() {
           <input
             type="text"
             placeholder="Username"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 border-slate-200 text-black"
+            className="inputbox"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 border-slate-200 text-black"
+            className="inputbox"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="errmsg">{error}</p>}
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-          >
+          <button type="submit" className="loginbtn">
             {loading ? "Logging in..." : "login"}
           </button>
         </form>

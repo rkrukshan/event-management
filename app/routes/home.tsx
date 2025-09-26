@@ -1,3 +1,4 @@
+import UserLogin from "~/components/UserLogin";
 import type { Route } from "./+types/home";
 import AdminLogin from "~/components/AdminLogin";
 
@@ -9,5 +10,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <AdminLogin />;
+  return (<>
+  <AdminLogin />
+  <UserLogin />
+  </>);
 }
