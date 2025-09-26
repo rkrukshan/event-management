@@ -5,7 +5,7 @@ export default function AdminLogin() {
   return (
     <div className="container flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-5">
           <div className="bg-blue-100 p-9 rounded-full">
             <FaLock className="text-blue-600 text-2xl" />
           </div>
