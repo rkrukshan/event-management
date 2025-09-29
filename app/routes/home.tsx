@@ -1,13 +1,13 @@
 import type { Route } from "./+types/home";
-import AdminLogin from "~/routes/AdminLogin";
+// import AdminLogin from "~/routes/AdminLogin";
 import "react-toastify/dist/ReactToastify.css";
 import { Bounce, ToastContainer } from "react-toastify";
 import UserSignup from "~/routes/userSignup";
-import UserLogin from "./userLogin";
 import AdminLogin from "~/components/AdminLogin";
 import { Link } from "react-router-dom";
 import Manageevent from "./Manageevent/manageevent";
 import UserEventBooking from "./Userregisterevent/UserEvent";
+import UserLogin from "./UserLogin";
 
 
 export function meta({}: Route.MetaArgs) {
