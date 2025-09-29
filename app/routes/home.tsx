@@ -1,3 +1,4 @@
+import UserLogin from "~/components/UserLogin";
 import type { Route } from "./+types/home";
 import AdminLogin from "~/components/AdminLogin";
 import { Link } from "react-router-dom";
@@ -13,10 +14,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return (
-    <>
-<Manageevent/>
-
-    </>
-  );
+  return (<>
+  <AdminLogin />
+  <UserLogin />
+  </>);
 }
