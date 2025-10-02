@@ -33,7 +33,7 @@ export default function EventForm() {
       <div className="flex items-center justify-between mx-11 mb-2">  
         <div>
           <button
-            onClick={() => navigate("/manage")} // Go back to previous page
+            onClick={() => navigate("/manage")} 
             className="bg-gray-300 text-gray-700 px-4 py-1 rounded hover:bg-gray-400 transition ml-3 flex items-center "
           >
             <FaArrowLeft size={20} className="text-gray-700  " />
@@ -58,13 +58,13 @@ export default function EventForm() {
   validationSchema={EventSchema}
   onSubmit={async (values, { resetForm }) => {
     try {
-      const response = await fetch("http://localhost:5206/api/events", {
+      const response = await fetch("http://localhost:5297/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: values.eventName,   // map correctly to backend DTO
+          name: values.eventName,   
           description: values.description,
           startDate: values.startDate,
           endDate: values.endDate,
