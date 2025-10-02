@@ -20,6 +20,8 @@ const EventSchema = Yup.object().shape({
     .required("End date is required"),
 });
 
+
+
 export default function EventForm() {
   const navigate = useNavigate();
 
@@ -46,20 +48,45 @@ export default function EventForm() {
         Fill in the details below to create a new event for the company.
       </p>
 
-      <Formik
-        initialValues={{
-          eventName: "",
-          description: "",
-          startDate: "",
-          endDate: "",
-        }}
-        validationSchema={EventSchema}
-        onSubmit={(values, { resetForm }) => {
-          console.log(values);
-           toast.success(`Event "${values.eventName}" created successfully!`);
-          resetForm();
-        }}
-      >
+    <Formik
+  initialValues={{
+    eventName: "",
+    description: "",
+    startDate: "",
+    endDate: "",
+  }}
+  validationSchema={EventSchema}
+  onSubmit={async (values, { resetForm }) => {
+    try {
+      const response = await fetch("http://localhost:5206/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.eventName,   // map correctly to backend DTO
+          description: values.description,
+          startDate: values.startDate,
+          endDate: values.endDate,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        toast.error("Failed to create event: " + errorText);
+        return;
+      }
+
+      const data = await response.json();
+      toast.success(`Event "${data.name}" created successfully!`);
+      resetForm();
+    } catch (err) {
+      console.error("Error creating event:", err);
+      toast.error("Error connecting to server");
+    }
+  }}
+>
+
         {({ resetForm }) => (
           <Form className="space-y-9">
             {/* Event Name */}

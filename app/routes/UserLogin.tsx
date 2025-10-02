@@ -47,7 +47,7 @@ export default function UserLogin() {
   });
 
   return (
-    <div className="container flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="container flex items-center justify-center min-h-screen bg-gray-100 max-w-screen">
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">

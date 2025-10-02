@@ -1,32 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function UserEventBooking() {
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
 
-  // Example Events Data (you can fetch from backend later)
-  const events = [
-    { id: 1, name: "Annual Tech Summit 2024", startdate: "2025-10-10", enddate: "2025-10-13" },
-    { id: 2, name: "Innovation Workshop", startdate: "2025-11-15", enddate: "2025-11-20" },
-    { id: 3, name: "Startup Meetup", startdate: "2025-12-05", enddate: "2025-12-10" },
-  ];
+  // Example: Replace with actual logged-in user's ID
+  const userId = 1;
 
-  const handleBooking = (e: React.FormEvent<HTMLFormElement>) => {
+  // Fetch events from API when component mounts
+  useEffect(() => {
+    axios
+      .get("http://localhost:5206/api/Events")
+      .then((response) => setEvents(response.data))
+      .catch((error) => console.error("Error fetching events:", error));
+  }, []);
+
+  // Fetch bookings for this user
+  useEffect(() => {
+    axios
+      .get("http://localhost:5206/api/EventBookings")
+      .then((response) => {
+        // Filter bookings by userId
+        const userBookings = response.data.filter(
+          (b: any) => b.userId === userId
+        );
+        setBookings(userBookings);
+      })
+      .catch((error) => console.error("Error fetching bookings:", error));
+  }, []);
+
+  // Booking handler
+  const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    if (!selectedEvent) return;
+
     const booking = {
       eventId: selectedEvent.id,
-      eventName: selectedEvent.name,
-      name: formData.get("name"),
-      email: formData.get("email"),
+      userId: userId,
     };
 
-    setBookings([...bookings, booking]);
-    toast.success(`Successfully booked "${selectedEvent.name}"!`);
+    try {
+      const response = await axios.post(
+        "http://localhost:5206/api/EventBookings",
+        booking
+      );
+      toast.success(`Successfully booked "${selectedEvent.name}"!`);
 
-    setSelectedEvent(null); // Close form
-    e.currentTarget.reset();
+      // Update local bookings
+      setBookings([...bookings, response.data]);
+
+      setSelectedEvent(null);
+    } catch (err: any) {
+      toast.error(err.response?.data || "Failed to book event");
+      console.error(err);
+    }
   };
 
   return (
@@ -49,8 +79,12 @@ export default function UserEventBooking() {
           {events.map((event) => (
             <tr key={event.id} className="border-t">
               <td className="p-3">{event.name}</td>
-              <td className="p-3">{event.startdate}</td>
-              <td className="p-3">{event.enddate}</td>
+              <td className="p-3">
+                {new Date(event.startDate).toLocaleDateString()}
+              </td>
+              <td className="p-3">
+                {new Date(event.endDate).toLocaleDateString()}
+              </td>
               <td className="p-3 text-center">
                 <button
                   onClick={() => setSelectedEvent(event)}
@@ -72,24 +106,7 @@ export default function UserEventBooking() {
               Book Event: {selectedEvent.name}
             </h2>
             <form onSubmit={handleBooking} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Your Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  required
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Your Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
+              {/* No need to collect name/email since backend uses UserId */}
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
@@ -121,9 +138,11 @@ export default function UserEventBooking() {
                 className="p-3 border rounded bg-gray-50 flex justify-between"
               >
                 <span>
-                  {b.eventName} - {b.name} ({b.email})
+                  {b.eventName} - {b.userName}
                 </span>
-                <span className="text-sm text-gray-600">Booked</span>
+                <span className="text-sm text-gray-600">
+                  {new Date(b.bookingDate).toLocaleDateString()}
+                </span>
               </li>
             ))}
           </ul>

@@ -1,56 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-// Sample event and booking data
-const initialEvents = [
-  { id: 1, name: "Tech Summit 2024", startDate: "2025-10-01", endDate: "2025-10-03" },
-  { id: 2, name: "Workshop on AI", startDate: "2025-11-05", endDate: "2025-11-05" },
-];
-
-const bookings = [
-  { id: 1, eventId: 1, user: "John Doe" },
-  { id: 2, eventId: 1, user: "Jane Smith" },
-  { id: 3, eventId: 2, user: "Alice Johnson" },
-];
-
-export default function Manageevent() {
+export default function ManageEvent() {
   const [showDashboard, setShowDashboard] = useState(true);
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [selectedEventBookings, setSelectedEventBookings] = useState<any[]>([]);
   const [showBookings, setShowBookings] = useState(false);
 
-  // Edit / Delete handlers
-  const handleEdit = (event: any) => {
-    alert(`Edit Event: ${event.name}`);
+  const [editingEvent, setEditingEvent] = useState<any>(null); // for edit
+
+  // Fetch events
+  const fetchEvents = () => {
+    axios
+      .get("http://localhost:5206/api/Events")
+      .then((res) => setEvents(res.data))
+      .catch((err) => console.error(err));
   };
 
+  // Fetch bookings
+  const fetchBookings = () => {
+    axios
+      .get("http://localhost:5206/api/EventBookings")
+      .then((res) => setBookings(res.data))
+      .catch((err) => console.error(err));
+  };
+
+  useEffect(() => {
+    fetchEvents();
+    fetchBookings();
+    const interval = setInterval(fetchBookings, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Delete
   const handleDelete = (eventId: number) => {
     if (confirm("Are you sure you want to delete this event?")) {
-      setEvents(events.filter((e) => e.id !== eventId));
+      axios
+        .delete(`http://localhost:5206/api/Events/${eventId}`)
+        .then(() => setEvents(events.filter((e) => e.id !== eventId)))
+        .catch((err) => console.error(err));
     }
   };
 
+  // View bookings
   const handleViewBookings = (eventId: number) => {
     const eventBookings = bookings.filter((b) => b.eventId === eventId);
     setSelectedEventBookings(eventBookings);
     setShowBookings(true);
+    setShowDashboard(false);
+  };
+
+  // Edit
+  const handleEdit = (event: any) => {
+    setEditingEvent(event);
+  };
+
+  // Save edited event
+  const handleSaveEdit = async () => {
+    try {
+      await axios.put(`http://localhost:5206/api/Events/${editingEvent.id}`, {
+        name: editingEvent.name,
+        startDate: editingEvent.startDate,
+        endDate: editingEvent.endDate,
+      });
+      // Update local state
+      setEvents(events.map((e) => (e.id === editingEvent.id ? editingEvent : e)));
+      setEditingEvent(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update event");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navbar
-      <nav className="bg-gray-800 text-white p-4 flex justify-between">
-        <h1 className="font-bold text-xl">Admin Dashboard</h1>
-        <button
-          className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
-          onClick={() => { setShowDashboard(true); setShowBookings(false); }}
-        >
-          Dashboard
-        </button>
-      </nav> */}
-      
-
-      {/* Content */}
       <main className="p-6">
+        {/* Events Dashboard */}
         {showDashboard && (
           <div className="bg-white p-4 rounded shadow">
             <h2 className="text-2xl font-bold mb-4">Events</h2>
@@ -68,8 +94,12 @@ export default function Manageevent() {
                 {events.map((event) => (
                   <tr key={event.id} className="border-b">
                     <td className="border px-4 py-2">{event.name}</td>
-                    <td className="border px-4 py-2">{event.startDate}</td>
-                    <td className="border px-4 py-2">{event.endDate}</td>
+                    <td className="border px-4 py-2">
+                      {new Date(event.startDate).toLocaleDateString()}
+                    </td>
+                    <td className="border px-4 py-2">
+                      {new Date(event.endDate).toLocaleDateString()}
+                    </td>
                     <td className="border px-4 py-2 space-x-2">
                       <button
                         onClick={() => handleEdit(event)}
@@ -99,22 +129,104 @@ export default function Manageevent() {
           </div>
         )}
 
+        {/* Edit Event Modal */}
+        {editingEvent && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+              <h2 className="text-xl font-bold mb-4">Edit Event</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium">Name</label>
+                  <input
+                    type="text"
+                    value={editingEvent.name}
+                    onChange={(e) =>
+                      setEditingEvent({ ...editingEvent, name: e.target.value })
+                    }
+                    className="w-full border px-3 py-2 rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium">Start Date</label>
+                  <input
+                    type="date"
+                    value={editingEvent.startDate.split("T")[0]}
+                    onChange={(e) =>
+                      setEditingEvent({ ...editingEvent, startDate: e.target.value })
+                    }
+                    className="w-full border px-3 py-2 rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium">End Date</label>
+                  <input
+                    type="date"
+                    value={editingEvent.endDate.split("T")[0]}
+                    onChange={(e) =>
+                      setEditingEvent({ ...editingEvent, endDate: e.target.value })
+                    }
+                    className="w-full border px-3 py-2 rounded"
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setEditingEvent(null)}
+                    className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Bookings Table */}
         {showBookings && (
           <div className="bg-white p-4 rounded shadow mt-6">
-            <h2 className="text-2xl font-bold mb-4">User's Event Booking </h2>
+            <h2 className="text-2xl font-bold mb-4">User's Event Bookings</h2>
+            <button
+              className="mb-4 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-400"
+              onClick={() => {
+                setShowDashboard(true);
+                setShowBookings(false);
+              }}
+            >
+              Back to Events
+            </button>
             <table className="w-full table-auto border-collapse">
               <thead>
                 <tr className="bg-gray-200">
-                  <th className="border px-4 py-2">User</th>
+                  <th className="border px-4 py-2">User Name</th>
+                  <th className="border px-4 py-2">Booking Date</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedEventBookings.map((b) => (
-                  <tr key={b.id} className="border-b">
-                    <td className="border px-4 py-2">{b.user}</td>
+                {selectedEventBookings.length > 0 ? (
+                  selectedEventBookings.map((b) => (
+                    <tr key={b.id} className="border-b">
+                      <td className="border px-4 py-2">{b.userName}</td>
+                      <td className="border px-4 py-2">
+                        {new Date(b.bookingDate).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      className="border px-4 py-2 text-center text-gray-500"
+                    >
+                      No bookings yet
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
