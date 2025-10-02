@@ -17,7 +17,7 @@ export default function UserSignup() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5297/api/Auth/register", {
+      const res = await axios.post("http://localhost:5297/api/auth/register", {
         username: values.username,
         password: values.password,
       });
