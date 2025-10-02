@@ -17,7 +17,10 @@ export default function UserSignup() {
     setError("");
 
     try {
-      const res = await axios.post("signupapi", values);
+      const res = await axios.post("http://localhost:5264/api/auth/register", {
+        username: values.username,
+        password: values.password,
+      });
       console.log("Signup Success", res.data);
 
       localStorage.setItem("token", res.data.token);
@@ -40,7 +43,6 @@ export default function UserSignup() {
     username: Yup.string()
       .min(3, "Must be at least 3 characters")
       .required("Username is Required"),
-    email: Yup.string().email("Invalid email").required("Email is Required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .required("Password is Required"),
@@ -68,7 +70,6 @@ export default function UserSignup() {
         <Formik
           initialValues={{
             username: "",
-            email: "",
             password: "",
             confirmPassword: "",
           }}
@@ -90,24 +91,6 @@ export default function UserSignup() {
                 />
                 <ErrorMessage
                   name="username"
-                  component="p"
-                  className="text-red-500 text-xs mt-1"
-                />
-              </div>
-
-              <div className="text-left">
-                <Field
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${
-                    errors.email && touched.email
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                />
-                <ErrorMessage
-                  name="email"
                   component="p"
                   className="text-red-500 text-xs mt-1"
                 />
@@ -164,11 +147,9 @@ export default function UserSignup() {
 
         <div className="mt-6 text-sm">
           <p className="text-gray-600">
-            Already have an account?
+            Already have an account?{" "}
             <a
-              href="/userlogin"
-              className="text-blue-500 hover:text-blue-600 font-medium"
-            >
+              href="/userlogin" className="text-blue-500 hover:text-blue-600 font-medium" >
               Login
             </a>
           </p>
