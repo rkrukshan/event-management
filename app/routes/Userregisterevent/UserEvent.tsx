@@ -7,10 +7,8 @@ export default function UserEventBooking() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
 
-  // Example: Replace with actual logged-in user's ID
   const userId = 1;
 
-  // Fetch events from API when component mounts
   useEffect(() => {
     axios
       .get("http://localhost:5206/api/Events")
@@ -18,12 +16,10 @@ export default function UserEventBooking() {
       .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
-  // Fetch bookings for this user
   useEffect(() => {
     axios
       .get("http://localhost:5206/api/EventBookings")
       .then((response) => {
-        // Filter bookings by userId
         const userBookings = response.data.filter(
           (b: any) => b.userId === userId
         );
@@ -32,7 +28,6 @@ export default function UserEventBooking() {
       .catch((error) => console.error("Error fetching bookings:", error));
   }, []);
 
-  // Booking handler
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedEvent) return;
@@ -47,9 +42,8 @@ export default function UserEventBooking() {
         "http://localhost:5206/api/EventBookings",
         booking
       );
-      toast.success(`Successfully booked "${selectedEvent.name}"!`);
+      toast.success(`Successfully booked ${selectedEvent.name}!`);
 
-      // Update local bookings
       setBookings([...bookings, response.data]);
 
       setSelectedEvent(null);
@@ -65,7 +59,6 @@ export default function UserEventBooking() {
 
       <h1 className="text-2xl font-bold mb-6">Available Events</h1>
 
-      {/* Events Table */}
       <table className="w-full border border-gray-200 shadow-sm rounded-lg">
         <thead className="bg-gray-100">
           <tr>
@@ -98,7 +91,6 @@ export default function UserEventBooking() {
         </tbody>
       </table>
 
-      {/* Booking Form Modal */}
       {selectedEvent && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
@@ -106,7 +98,6 @@ export default function UserEventBooking() {
               Book Event: {selectedEvent.name}
             </h2>
             <form onSubmit={handleBooking} className="space-y-4">
-              {/* No need to collect name/email since backend uses UserId */}
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
@@ -127,7 +118,6 @@ export default function UserEventBooking() {
         </div>
       )}
 
-      {/* My Bookings Section */}
       {bookings.length > 0 && (
         <div className="mt-10">
           <h2 className="text-xl font-bold mb-4">My Bookings</h2>

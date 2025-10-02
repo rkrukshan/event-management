@@ -17,7 +17,7 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const res = await axios.post("loginapi", {
+      const res = await axios.post("http://localhost:5264/api/auth/login", {
         username: values.username,
         password: values.password,
       });
@@ -28,7 +28,7 @@ export default function AdminLogin() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       toast.success("Login Success", { transition: Bounce });
-      navigate("/admin/dashboard");
+      navigate("/manage");
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Login Failed";
       toast.error(errorMessage, { transition: Bounce });
