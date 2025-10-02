@@ -17,7 +17,7 @@ export default function UserLogin() {
     setError("");
 
     try {
-      const res = await axios.post("loginapi", {
+      const res = await axios.post("http://localhost:5264/api/auth/login", {
         username: values.username,
         password: values.password,
       });
@@ -27,7 +27,7 @@ export default function UserLogin() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       toast.success("Login Success", { transition: Bounce });
-      navigate("/dashboard");
+      navigate("/book");
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Login Failed";
       toast.error(errorMessage, { transition: Bounce });
@@ -47,7 +47,7 @@ export default function UserLogin() {
   });
 
   return (
-    <div className="container flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="container flex items-center justify-center min-h-screen bg-gray-100 max-w-screen">
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
@@ -122,6 +122,14 @@ export default function UserLogin() {
               className="text-blue-500 hover:text-blue-500 font-medium"
             >
               Sign up
+            </a>
+          </p>
+          <p className="text-gray-600 my-5">
+            <a
+              href="/adminlogin"
+              className="text-blue-500 hover:text-blue-500 font-medium"
+            >
+              For Admin Access
             </a>
           </p>
         </div>
