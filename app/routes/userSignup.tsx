@@ -17,7 +17,7 @@ export default function UserSignup() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5264/api/auth/register", {
+      const res = await axios.post("http://localhost:5297/api/auth/register", {
         username: values.username,
         password: values.password,
       });
@@ -27,7 +27,7 @@ export default function UserSignup() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       toast.success("Signup Success", { transition: Bounce });
-      navigate("/dashboard");
+      navigate("/book");
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Signup Failed";
       toast.error(errorMessage, { transition: Bounce });

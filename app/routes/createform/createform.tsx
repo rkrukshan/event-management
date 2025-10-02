@@ -58,7 +58,7 @@ export default function EventForm() {
   validationSchema={EventSchema}
   onSubmit={async (values, { resetForm }) => {
     try {
-      const response = await fetch("http://localhost:5206/api/events", {
+      const response = await fetch("http://localhost:5297/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

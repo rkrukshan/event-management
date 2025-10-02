@@ -11,14 +11,14 @@ export default function UserEventBooking() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5206/api/Events")
+      .get("http://localhost:5297/api/Events")
       .then((response) => setEvents(response.data))
       .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
   useEffect(() => {
     axios
-      .get("http://localhost:5206/api/EventBookings")
+      .get("http://localhost:5297/api/EventBookings")
       .then((response) => {
         const userBookings = response.data.filter(
           (b: any) => b.userId === userId
@@ -39,7 +39,7 @@ export default function UserEventBooking() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5206/api/EventBookings",
+        "http://localhost:5297/api/EventBookings",
         booking
       );
       toast.success(`Successfully booked ${selectedEvent.name}!`);

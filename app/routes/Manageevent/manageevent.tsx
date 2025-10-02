@@ -13,7 +13,7 @@ export default function ManageEvent() {
   // Fetch events
   const fetchEvents = () => {
     axios
-      .get("http://localhost:5206/api/Events")
+      .get("http://localhost:5297/api/Events")
       .then((res) => setEvents(res.data))
       .catch((err) => console.error(err));
   };
@@ -21,7 +21,7 @@ export default function ManageEvent() {
   // Fetch bookings
   const fetchBookings = () => {
     axios
-      .get("http://localhost:5206/api/EventBookings")
+      .get("http://localhost:5297/api/EventBookings")
       .then((res) => setBookings(res.data))
       .catch((err) => console.error(err));
   };
@@ -37,7 +37,7 @@ export default function ManageEvent() {
   const handleDelete = (eventId: number) => {
     if (confirm("Are you sure you want to delete this event?")) {
       axios
-        .delete(`http://localhost:5206/api/Events/${eventId}`)
+        .delete(`http://localhost:5297/api/Events/${eventId}`)
         .then(() => setEvents(events.filter((e) => e.id !== eventId)))
         .catch((err) => console.error(err));
     }
@@ -59,7 +59,7 @@ export default function ManageEvent() {
   // Save edited event
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://localhost:5206/api/Events/${editingEvent.id}`, {
+      await axios.put(`http://localhost:5297/api/Events/${editingEvent.id}`, {
         name: editingEvent.name,
         startDate: editingEvent.startDate,
         endDate: editingEvent.endDate,
