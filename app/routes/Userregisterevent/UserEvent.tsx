@@ -75,6 +75,7 @@ export default function UserEventBooking() {
         <thead className="bg-gray-100">
           <tr>
             <th className="p-3 text-left">Event Name</th>
+            <th className="p-3 text-left">Description</th>
             <th className="p-3">Start Date</th>
             <th className="p-3">End Date</th>
             <th className="p-3">Action</th>
@@ -84,6 +85,7 @@ export default function UserEventBooking() {
           {events.map((event) => (
             <tr key={event.id} className="border-t">
               <td className="p-3">{event.name}</td>
+              <td className="p-3">{event.description}</td>
               <td className="p-3">
                 {new Date(event.startDate).toLocaleDateString()}
               </td>
