@@ -84,6 +84,7 @@ export default function ManageEvent() {
               <thead>
                 <tr className="bg-gray-200">
                   <th className="border px-4 py-2">Event Name</th>
+                   <th className="border px-4 py-2">Description</th>
                   <th className="border px-4 py-2">Start Date</th>
                   <th className="border px-4 py-2">End Date</th>
                   <th className="border px-4 py-2">Actions</th>
@@ -94,6 +95,7 @@ export default function ManageEvent() {
                 {events.map((event) => (
                   <tr key={event.id} className="border-b">
                     <td className="border px-4 py-2">{event.name}</td>
+                     <td className="border px-4 py-2">{event.description}</td>
                     <td className="border px-4 py-2">
                       {new Date(event.startDate).toLocaleDateString()}
                     </td>
@@ -129,63 +131,79 @@ export default function ManageEvent() {
           </div>
         )}
 
-        {/* Edit Event Modal */}
-        {editingEvent && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-              <h2 className="text-xl font-bold mb-4">Edit Event</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium">Name</label>
-                  <input
-                    type="text"
-                    value={editingEvent.name}
-                    onChange={(e) =>
-                      setEditingEvent({ ...editingEvent, name: e.target.value })
-                    }
-                    className="w-full border px-3 py-2 rounded"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">Start Date</label>
-                  <input
-                    type="date"
-                    value={editingEvent.startDate.split("T")[0]}
-                    onChange={(e) =>
-                      setEditingEvent({ ...editingEvent, startDate: e.target.value })
-                    }
-                    className="w-full border px-3 py-2 rounded"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">End Date</label>
-                  <input
-                    type="date"
-                    value={editingEvent.endDate.split("T")[0]}
-                    onChange={(e) =>
-                      setEditingEvent({ ...editingEvent, endDate: e.target.value })
-                    }
-                    className="w-full border px-3 py-2 rounded"
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setEditingEvent(null)}
-                    className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveEdit}
-                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+       {/* Edit Event Modal */}
+{editingEvent && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+      <h2 className="text-xl font-bold mb-4">Edit Event</h2>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium">Name</label>
+          <input
+            type="text"
+            value={editingEvent.name}
+            onChange={(e) =>
+              setEditingEvent({ ...editingEvent, name: e.target.value })
+            }
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Description</label>
+          <textarea
+            value={editingEvent.description || ""}
+            onChange={(e) =>
+              setEditingEvent({ ...editingEvent, description: e.target.value })
+            }
+            className="w-full border px-3 py-2 rounded"
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Start Date</label>
+          <input
+            type="date"
+            value={editingEvent.startDate.split("T")[0]}
+            onChange={(e) =>
+              setEditingEvent({ ...editingEvent, startDate: e.target.value })
+            }
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">End Date</label>
+          <input
+            type="date"
+            value={editingEvent.endDate.split("T")[0]}
+            onChange={(e) =>
+              setEditingEvent({ ...editingEvent, endDate: e.target.value })
+            }
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={() => setEditingEvent(null)}
+            className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSaveEdit}
+            className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* Bookings Table */}
         {showBookings && (

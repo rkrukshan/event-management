@@ -23,7 +23,7 @@ export default function UserLogin() {
       });
       console.log("Login Success", res.data);
 
-      localStorage.setItem("token", res.data.token);
+      //localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       toast.success("Login Success", { transition: Bounce });
