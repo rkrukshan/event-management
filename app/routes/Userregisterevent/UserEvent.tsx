@@ -8,6 +8,18 @@ export default function UserEventBooking() {
   const [events, setEvents] = useState<any[]>([]);
 
   const userId = 1;
+ const handleDelete = async (id: number) => {
+  try {
+    await axios.delete(`http://localhost:5297/api/EventBookings/${id}`);
+    setBookings((prev) => prev.filter((b) => b.id !== id));
+    toast.success("Booking deleted successfully!");
+  } catch (error) {
+    toast.error("Failed to delete booking");
+    console.error("Error deleting booking:", error);
+  }
+};
+
+
 
   useEffect(() => {
     axios
@@ -133,6 +145,12 @@ export default function UserEventBooking() {
                 <span className="text-sm text-gray-600">
                   {new Date(b.bookingDate).toLocaleDateString()}
                 </span>
+                 <button
+            onClick={() => handleDelete(b.id)} // Pass booking id
+            className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Delete
+          </button>
               </li>
             ))}
           </ul>

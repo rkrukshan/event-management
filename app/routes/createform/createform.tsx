@@ -168,6 +168,7 @@ export default function EventForm() {
               </button>
               <button
                 type="submit"
+                onClick={() => navigate("/manage")}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-150"
               >
                 Create Event

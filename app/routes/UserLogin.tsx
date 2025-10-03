@@ -17,13 +17,13 @@ export default function UserLogin() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5264/api/auth/login", {
+      const res = await axios.post("http://localhost:5297/api/auth/login", {
         username: values.username,
         password: values.password,
       });
       console.log("Login Success", res.data);
 
-      localStorage.setItem("token", res.data.token);
+      //localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       toast.success("Login Success", { transition: Bounce });
