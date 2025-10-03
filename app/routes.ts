@@ -6,6 +6,6 @@ export default [index("routes/home.tsx"),
     route("book","routes/Userregisterevent/UserEvent.tsx"),
 
     route("userlogin","routes/userLogin.tsx"),
-    route("adminlogin","routes/AdminLogin.tsx"),
+    route("/admin/login","routes/AdminLogin.tsx"),
     route("/userCreate","routes/userSignup.tsx")
 ] satisfies RouteConfig;
