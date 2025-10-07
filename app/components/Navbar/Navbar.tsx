@@ -7,6 +7,7 @@ export default function Navbar() {
   const location = useLocation();
 
   const hideOnPaths = [
+    "/",
     "/create",
     "/book",
     "/userlogin",
