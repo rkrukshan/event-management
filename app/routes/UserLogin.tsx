@@ -30,7 +30,7 @@ export default function UserLogin() {
             username: res.data.username,
             role: res.data.role,
             userId: res.data.userId,
-            isAdmin: false, // 👈 Regular user
+            isAdmin: false,
           })
         );
 
@@ -39,7 +39,6 @@ export default function UserLogin() {
         });
         navigate("/book");
       } else {
-        // 🆕 Check if it's an admin restriction error
         if (
           res.data.message?.includes("admin") ||
           res.data.message?.includes("Administrators")
@@ -60,7 +59,6 @@ export default function UserLogin() {
         errorMessage =
           err.response.data?.message || err.response.data || "Login Failed";
 
-        // 🆕 Show admin portal suggestion for admin users
         if (
           errorMessage.includes("admin") ||
           errorMessage.includes("Administrators")
@@ -193,8 +191,6 @@ export default function UserLogin() {
             </a>
           </p>
         </div>
-
-       
       </div>
     </div>
   );
