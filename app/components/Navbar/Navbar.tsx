@@ -6,7 +6,7 @@ export default function Navbar() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
-  const hideOnPaths = ["/create", "/book","/userlogin","/admin/login","/usercreate"];
+  const hideOnPaths = ["/","/create", "/book","/userlogin","/admin/login","/usercreate"];
   const hide = hideOnPaths.some(
     (p) => location.pathname === p || location.pathname.startsWith(p)
   );

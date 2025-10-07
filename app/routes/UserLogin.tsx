@@ -192,8 +192,6 @@ export default function UserLogin() {
             </a>
           </p>
         </div>
-
-       
       </div>
     </div>
   );
