@@ -11,7 +11,7 @@ export default function UserEventBooking() {
 
   const navigate = useNavigate();
 
-  // Load user only on client
+  // ✅ Load user only on client
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("user");
@@ -33,8 +33,9 @@ export default function UserEventBooking() {
         navigate("/login"); // no user found
       }
     }
-  }, [navigate]);
+  }, [navigate]); // ✅ Correct dependency array — no trailing commas
 
+  // ✅ Handle delete
   const handleDelete = async (id: number) => {
     if (!userId) return;
 
@@ -50,7 +51,7 @@ export default function UserEventBooking() {
     }
   };
 
-  // Fetch events
+  // ✅ Fetch events
   useEffect(() => {
     axios
       .get("http://localhost:5297/api/Events")
@@ -58,7 +59,7 @@ export default function UserEventBooking() {
       .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
-  // Fetch bookings only when we know userId
+  // ✅ Fetch bookings only when we know userId
   useEffect(() => {
     if (!userId) return;
     axios
@@ -67,6 +68,7 @@ export default function UserEventBooking() {
       .catch((error) => console.error("Error fetching bookings:", error));
   }, [userId]);
 
+  // ✅ Handle booking
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedEvent || !userId) return;
@@ -87,12 +89,14 @@ export default function UserEventBooking() {
     }
   };
 
+  // ✅ Render
   return (
     <div className="container mx-auto p-6">
       <Toaster position="top-right" />
 
       <h1 className="text-2xl font-bold mb-6">Available Events</h1>
 
+      {/* Event List Table */}
       <table className="w-full border border-gray-200 shadow-sm rounded-lg">
         <thead className="bg-gray-100">
           <tr>
@@ -127,6 +131,7 @@ export default function UserEventBooking() {
         </tbody>
       </table>
 
+      {/* Booking Modal */}
       {selectedEvent && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
@@ -155,6 +160,7 @@ export default function UserEventBooking() {
         </div>
       )}
 
+      {/* My Bookings */}
       {bookings.length > 0 && (
         <div className="mt-10">
           <h2 className="text-xl font-bold mb-4">My Bookings</h2>
@@ -162,7 +168,7 @@ export default function UserEventBooking() {
             {bookings.map((b) => (
               <li
                 key={b.id}
-                className="p-3 border rounded bg-gray-50 flex justify-between"
+                className="p-3 border rounded bg-gray-50 flex justify-between items-center"
               >
                 <span>
                   {b.eventName} - {b.userName}
