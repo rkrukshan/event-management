@@ -36,17 +36,19 @@ export default function UserEventBooking() {
   }, [navigate]);
 
   const handleDelete = async (id: number) => {
-  if (!userId) return;
-  
-  try {
-    await axios.delete(`http://localhost:5297/api/EventBookings/${id}/user/${userId}`);
-    setBookings((prev) => prev.filter((b) => b.id !== id));
-    toast.success("Booking deleted successfully!");
-  } catch (error) {
-    toast.error("Failed to delete booking");
-    console.error("Error deleting booking:", error);
-  }
-};
+    if (!userId) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:5297/api/EventBookings/${id}/user/${userId}`
+      );
+      setBookings((prev) => prev.filter((b) => b.id !== id));
+      toast.success("Booking deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete booking");
+      console.error("Error deleting booking:", error);
+    }
+  };
 
   // Fetch events
   useEffect(() => {
