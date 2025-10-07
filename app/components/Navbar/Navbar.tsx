@@ -6,7 +6,13 @@ export default function Navbar() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
-  const hideOnPaths = ["/","/create", "/book","/userlogin","/admin/login","/usercreate"];
+  const hideOnPaths = [
+    "/create",
+    "/book",
+    "/userlogin",
+    "/admin/login",
+    "/usercreate",
+  ];
   const hide = hideOnPaths.some(
     (p) => location.pathname === p || location.pathname.startsWith(p)
   );
@@ -53,25 +59,25 @@ export default function Navbar() {
             >
               Create Events
             </NavLink>
-
-            
           </>
         )}
         <div
-              className="bg-gray-800 text-white w-10 h-10 flex items-center justify-center rounded-full cursor-pointer select-none"
-              onClick={() => setOpen(!open)}
-            >
-              <span className="text-sm font-bold">MT</span>
-            </div>
+          className="bg-gray-800 text-white w-10 h-10 flex items-center justify-center rounded-full cursor-pointer select-none"
+          onClick={() => setOpen(!open)}
+        >
+          <span className="text-sm font-bold">MT</span>
+        </div>
 
         {!hide && open && (
           <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-            <Link to="/" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
+            <Link
+              to="/"
+              className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+            >
               Logout
             </Link>
           </div>
         )}
-         
       </div>
     </nav>
   );
