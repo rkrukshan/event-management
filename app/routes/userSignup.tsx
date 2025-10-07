@@ -23,11 +23,27 @@ export default function UserSignup() {
       });
       console.log("Signup Success", res.data);
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      // Store the token and user data
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+      if (res.data.userId) {
+        localStorage.setItem("userId", res.data.userId.toString());
+      }
+      if (res.data.username) {
+        localStorage.setItem("username", res.data.username);
+      }
+      if (res.data.role) {
+        localStorage.setItem("role", res.data.role);
+      }
 
       toast.success("Signup Success", { transition: Bounce });
-      navigate("/book");
+      
+      // Navigate to book page after successful signup
+      setTimeout(() => {
+        navigate("/book");
+      }, 1000);
+      
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Signup Failed";
       toast.error(errorMessage, { transition: Bounce });
