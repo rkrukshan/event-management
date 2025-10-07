@@ -74,7 +74,7 @@ export default function ManageEvent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 overflow-auto h-screen">
       <main className="p-6">
         {/* Events Dashboard */}
         {showDashboard && (

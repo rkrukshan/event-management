@@ -32,7 +32,8 @@ export default function Navbar() {
   }, [location.pathname]);
 
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
+    <nav className="bg-white shadow-md px-2 py-3 flex items-center justify-between fixed top-0 left-0 w-full z-50">
+
       {/* Left Logo */}
       <div className="flex items-center gap-2">
         <div className="bg-blue-500 w-6 h-6 rounded-md"></div>
