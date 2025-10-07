@@ -54,14 +54,15 @@ export default function Navbar() {
               Create Events
             </NavLink>
 
-            <div
+            
+          </>
+        )}
+        <div
               className="bg-gray-800 text-white w-10 h-10 flex items-center justify-center rounded-full cursor-pointer select-none"
               onClick={() => setOpen(!open)}
             >
               <span className="text-sm font-bold">MT</span>
             </div>
-          </>
-        )}
 
         {!hide && open && (
           <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
@@ -70,6 +71,7 @@ export default function Navbar() {
             </Link>
           </div>
         )}
+         
       </div>
     </nav>
   );

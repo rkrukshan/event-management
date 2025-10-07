@@ -1,16 +1,45 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function UserEventBooking() {
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
 
-  const userId = 1;
- const handleDelete = async (id: number) => {
+  const navigate = useNavigate();
+
+  // Load user only on client
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+
+      if (storedUser && storedUser !== "undefined") {
+        try {
+          const user = JSON.parse(storedUser);
+          if (user?.userId) {
+            setUserId(user.userId);
+          } else {
+            navigate("/login"); // redirect if invalid
+          }
+        } catch (err) {
+          console.error("Invalid JSON in localStorage:", err);
+          localStorage.removeItem("user"); // cleanup
+          navigate("/login");
+        }
+      } else {
+        navigate("/login"); // no user found
+      }
+    }
+  }, [navigate]);
+
+  const handleDelete = async (id: number) => {
+  if (!userId) return;
+  
   try {
-    await axios.delete(`http://localhost:5297/api/EventBookings/${id}`);
+    await axios.delete(`http://localhost:5297/api/EventBookings/${id}/user/${userId}`);
     setBookings((prev) => prev.filter((b) => b.id !== id));
     toast.success("Booking deleted successfully!");
   } catch (error) {
@@ -19,8 +48,7 @@ export default function UserEventBooking() {
   }
 };
 
-
-
+  // Fetch events
   useEffect(() => {
     axios
       .get("http://localhost:5297/api/Events")
@@ -28,26 +56,20 @@ export default function UserEventBooking() {
       .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
+  // Fetch bookings only when we know userId
   useEffect(() => {
+    if (!userId) return;
     axios
-      .get("http://localhost:5297/api/EventBookings")
-      .then((response) => {
-        const userBookings = response.data.filter(
-          (b: any) => b.userId === userId
-        );
-        setBookings(userBookings);
-      })
+      .get(`http://localhost:5297/api/EventBookings/user/${userId}`)
+      .then((response) => setBookings(response.data))
       .catch((error) => console.error("Error fetching bookings:", error));
-  }, []);
+  }, [userId]);
 
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedEvent) return;
+    if (!selectedEvent || !userId) return;
 
-    const booking = {
-      eventId: selectedEvent.id,
-      userId: userId,
-    };
+    const booking = { eventId: selectedEvent.id, userId };
 
     try {
       const response = await axios.post(
@@ -55,9 +77,7 @@ export default function UserEventBooking() {
         booking
       );
       toast.success(`Successfully booked ${selectedEvent.name}!`);
-
       setBookings([...bookings, response.data]);
-
       setSelectedEvent(null);
     } catch (err: any) {
       toast.error(err.response?.data || "Failed to book event");
@@ -123,6 +143,7 @@ export default function UserEventBooking() {
                 <button
                   type="submit"
                   className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                  disabled={!userId}
                 >
                   Confirm Booking
                 </button>
@@ -136,9 +157,9 @@ export default function UserEventBooking() {
         <div className="mt-10">
           <h2 className="text-xl font-bold mb-4">My Bookings</h2>
           <ul className="space-y-2">
-            {bookings.map((b, index) => (
+            {bookings.map((b) => (
               <li
-                key={index}
+                key={b.id}
                 className="p-3 border rounded bg-gray-50 flex justify-between"
               >
                 <span>
@@ -147,12 +168,12 @@ export default function UserEventBooking() {
                 <span className="text-sm text-gray-600">
                   {new Date(b.bookingDate).toLocaleDateString()}
                 </span>
-                 <button
-            onClick={() => handleDelete(b.id)} // Pass booking id
-            className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Delete
-          </button>
+                <button
+                  onClick={() => handleDelete(b.id)}
+                  className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
               </li>
             ))}
           </ul>

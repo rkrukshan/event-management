@@ -30,7 +30,7 @@ export default function UserLogin() {
             username: res.data.username,
             role: res.data.role,
             userId: res.data.userId,
-            isAdmin: false,
+            isAdmin: false, 
           })
         );
 
@@ -39,6 +39,7 @@ export default function UserLogin() {
         });
         navigate("/book");
       } else {
+        //  Check if it's an admin restriction error
         if (
           res.data.message?.includes("admin") ||
           res.data.message?.includes("Administrators")
