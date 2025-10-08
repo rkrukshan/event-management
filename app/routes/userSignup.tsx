@@ -42,7 +42,8 @@ export default function UserSignup() {
       // Navigate to book page after successful signup
       setTimeout(() => {
         navigate("/book");
-      }, 1000);
+      });
+      
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Signup Failed";
       toast.error(errorMessage, { transition: Bounce });
