@@ -126,7 +126,7 @@ export default function UserEventBooking() {
 
       {/* Booking Modal */}
       {selectedEvent && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-50 transition">
           <div className="bg-white p-6 rounded-xl shadow-2xl w-11/12 sm:w-96 animate-fade-in">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">
               Book Event:{" "}
