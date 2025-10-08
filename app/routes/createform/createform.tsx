@@ -1,12 +1,18 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import Manageevent from "../Manageevent/manageevent";
 import toast, { Toaster } from "react-hot-toast";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Tooltip,
+} from "@mui/material";
 
-// Validation schema
 const EventSchema = Yup.object().shape({
   eventName: Yup.string()
     .min(3, "Event name must be at least 3 characters")
@@ -20,164 +26,203 @@ const EventSchema = Yup.object().shape({
     .required("End date is required"),
 });
 
-
-
 export default function EventForm() {
   const navigate = useNavigate();
 
   return (
-    <div className="container w-xl flex mx-auto">
-      <Toaster position="top-right"  reverseOrder={false}/>
-      <div className="max-w-xl mx-auto mt-10 bg-white p-6 shadow rounded-lg">
-      {/* Main Heading */}
-      <div className="flex items-center justify-between mx-11 mb-2">  
-        <div>
-          <button
-            onClick={() => navigate("/manage")} 
-            className="bg-gray-300 text-gray-700 px-4 py-1 rounded hover:bg-gray-400 transition ml-3 flex items-center "
-          >
-            <FaArrowLeft size={20} className="text-gray-700  " />
-          </button>
-        </div>
+    <Box sx={{ display: "flex", justifyContent: "center", mt: 10, px: 2 }}>
+      <Toaster position="top-right" reverseOrder={false} />
+      <Paper
+        elevation={8}
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+          p: 5,
+          borderRadius: 4,
+          backgroundColor: "#fefefe",
+          transition: "0.3s",
+          "&:hover": { boxShadow: "0 8px 20px rgba(0,0,0,0.15)" },
+        }}
+      >
+        {/* Header */}
+        <Box display="flex" alignItems="center" mb={4}>
+          <Tooltip title="Back to Manage Events">
+            <Button
+              onClick={() => navigate("/manage")}
+              variant="outlined"
+              startIcon={<FaArrowLeft />}
+              sx={{
+                textTransform: "none",
+                borderColor: "#757575",
+                color: "#424242",
+                fontWeight: 500,
+                "&:hover": { backgroundColor: "#f5f5f5" },
+              }}
+            >
+              Back
+            </Button>
+          </Tooltip>
 
-        <div className="ml-5 p-8 mx-10">
-          <h1 className="text-2xl font-bold">Create New Event</h1>
-        </div>
-      </div>
-      <p className="text-gray-600 mb-6">
-        Fill in the details below to create a new event for the company.
-      </p>
+          <Typography variant="h4" fontWeight="bold" ml={3} color="#1976d2">
+            Create New Event
+          </Typography>
+        </Box>
 
-    <Formik
-  initialValues={{
-    eventName: "",
-    description: "",
-    startDate: "",
-    endDate: "",
-  }}
-  validationSchema={EventSchema}
-  onSubmit={async (values, { resetForm }) => {
-    try {
-      const response = await fetch("http://localhost:5297/api/events", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: values.eventName,   
-          description: values.description,
-          startDate: values.startDate,
-          endDate: values.endDate,
-        }),
-      });
+        <Typography variant="body1" color="text.secondary" mb={4}>
+          Fill in the details below to create a new event for the company.
+        </Typography>
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        toast.error("Failed to create event: " + errorText);
-        return;
-      }
+        {/* Formik Form */}
+        <Formik
+          initialValues={{
+            eventName: "",
+            description: "",
+            startDate: "",
+            endDate: "",
+          }}
+          validationSchema={EventSchema}
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              const response = await fetch("http://localhost:5297/api/events", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name: values.eventName,
+                  description: values.description,
+                  startDate: values.startDate,
+                  endDate: values.endDate,
+                }),
+              });
 
-      const data = await response.json();
-      toast.success(`Event "${data.name}" created successfully!`);
-      resetForm();
-    } catch (err) {
-      console.error("Error creating event:", err);
-      toast.error("Error connecting to server");
-    }
-  }}
->
+              if (!response.ok) {
+                const errorText = await response.text();
+                toast.error("Failed to create event: " + errorText);
+                return;
+              }
 
-        {({ resetForm }) => (
-          <Form className="space-y-9">
-            {/* Event Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Event Name
-              </label>
-              <Field
-                name="eventName"
-                type="text"
-                className="input"
-                placeholder="e.g., Annual Tech Summit 2024"
-              />
-              <ErrorMessage
-                name="eventName"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
-            </div>
+              const data = await response.json();
+              toast.success(`Event "${data.name}" created successfully!`);
+              resetForm();
+              setTimeout(() => navigate("/manage"), 1200);
+            } catch (err) {
+              console.error("Error creating event:", err);
+              toast.error("Error connecting to server");
+            }
+          }}
+        >
+          {({
+            values,
+            handleChange,
+            handleBlur,
+            errors,
+            touched,
+            resetForm,
+          }) => (
+            <Form>
+              <Box display="flex" flexDirection="column" gap={3}>
+                {/* Event Name */}
+                <TextField
+                  fullWidth
+                  id="eventName"
+                  name="eventName"
+                  label="Event Name"
+                  placeholder="Annual Tech Summit 2024"
+                  value={values.eventName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.eventName && Boolean(errors.eventName)}
+                  helperText={touched.eventName && errors.eventName}
+                  variant="outlined"
+                  sx={{ borderRadius: 2 }}
+                />
 
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <Field
-                as="textarea"
-                name="description"
-                rows={4}
-                className="input"
-                placeholder="A brief summary of the event's purpose and highlights."
-              />
-              <ErrorMessage
-                name="description"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
-            </div>
+                {/* Description */}
+                <TextField
+                  fullWidth
+                  id="description"
+                  name="description"
+                  label="Description"
+                  placeholder="Brief summary of the event's purpose."
+                  multiline
+                  rows={5}
+                  value={values.description}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.description && Boolean(errors.description)}
+                  helperText={touched.description && errors.description}
+                  variant="outlined"
+                  sx={{ borderRadius: 2 }}
+                />
 
-            {/* Start Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Start Date
-              </label>
-              <Field
-                name="startDate"
-                type="date"
-                className="input"
-                min={new Date().toISOString().split("T")[0]}
-              />
-              <ErrorMessage
-                name="startDate"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
-            </div>
+                {/* Dates */}
+                <Box
+                  display="flex"
+                  flexDirection={{ xs: "column", sm: "row" }}
+                  gap={2}
+                >
+                  <TextField
+                    fullWidth
+                    id="startDate"
+                    name="startDate"
+                    label="Start Date"
+                    type="date"
+                    InputLabelProps={{ shrink: true }}
+                    value={values.startDate}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.startDate && Boolean(errors.startDate)}
+                    helperText={touched.startDate && errors.startDate}
+                    variant="outlined"
+                    sx={{ borderRadius: 2 }}
+                  />
 
-            {/* End Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                End Date
-              </label>
-              <Field name="endDate" type="date" className="input" />
-              <ErrorMessage
-                name="endDate"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
-            </div>
+                  <TextField
+                    fullWidth
+                    id="endDate"
+                    name="endDate"
+                    label="End Date"
+                    type="date"
+                    InputLabelProps={{ shrink: true }}
+                    value={values.endDate}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.endDate && Boolean(errors.endDate)}
+                    helperText={touched.endDate && errors.endDate}
+                    variant="outlined"
+                    sx={{ borderRadius: 2 }}
+                  />
+                </Box>
 
-            {/* Buttons */}
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={() => resetForm()}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-150"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                onClick={() => navigate("/manage")}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-150"
-              >
-                Create Event
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
-    </div>
+                {/* Buttons */}
+                <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => resetForm()}
+                    sx={{ borderRadius: 2, px: 3 }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      borderRadius: 2,
+                      px: 4,
+                      background:
+                        "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
+                    }}
+                  >
+                    <div className="font-semibold">Create Event</div>
+                  </Button>
+                </Box>
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </Paper>
+    </Box>
   );
 }

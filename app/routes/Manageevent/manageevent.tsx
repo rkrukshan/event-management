@@ -1,5 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  Box,
+  Button,
+  Tooltip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Paper,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
+import { FaEdit } from "react-icons/fa";
+import { AiOutlineDelete } from "react-icons/ai";
+import { FaEye } from "react-icons/fa";
 
 export default function ManageEvent() {
   const [showDashboard, setShowDashboard] = useState(true);
@@ -7,8 +28,7 @@ export default function ManageEvent() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [selectedEventBookings, setSelectedEventBookings] = useState<any[]>([]);
   const [showBookings, setShowBookings] = useState(false);
-
-  const [editingEvent, setEditingEvent] = useState<any>(null); // for edit
+  const [editingEvent, setEditingEvent] = useState<any>(null);
 
   // Fetch events
   const fetchEvents = () => {
@@ -63,9 +83,11 @@ export default function ManageEvent() {
         name: editingEvent.name,
         startDate: editingEvent.startDate,
         endDate: editingEvent.endDate,
+        description: editingEvent.description,
       });
-      // Update local state
-      setEvents(events.map((e) => (e.id === editingEvent.id ? editingEvent : e)));
+      setEvents(
+        events.map((e) => (e.id === editingEvent.id ? editingEvent : e))
+      );
       setEditingEvent(null);
     } catch (err) {
       console.error(err);
@@ -74,182 +96,190 @@ export default function ManageEvent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 overflow-auto h-screen">
-      <main className="p-6">
-        {/* Events Dashboard */}
-        {showDashboard && (
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-2xl font-bold mb-4">Events</h2>
-            <table className="w-full table-auto border-collapse">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border px-4 py-2">Event Name</th>
-                   <th className="border px-4 py-2">Description</th>
-                  <th className="border px-4 py-2">Start Date</th>
-                  <th className="border px-4 py-2">End Date</th>
-                  <th className="border px-4 py-2">Actions</th>
-                  <th className="border px-4 py-2">Bookings</th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.map((event) => (
-                  <tr key={event.id} className="border-b">
-                    <td className="border px-4 py-2">{event.name}</td>
-                     <td className="border px-4 py-2">{event.description}</td>
-                    <td className="border px-4 py-2">
-                      {new Date(event.startDate).toLocaleDateString()}
-                    </td>
-                    <td className="border px-4 py-2">
-                      {new Date(event.endDate).toLocaleDateString()}
-                    </td>
-                    <td className="border px-4 py-2 space-x-2">
-                      <button
-                        onClick={() => handleEdit(event)}
-                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(event.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                    <td className="border px-4 py-2">
-                      <button
-                        onClick={() => handleViewBookings(event.id)}
-                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                      >
-                        View Bookings
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+    <Box sx={{ p: 10, backgroundColor: "#f9fafb", minHeight: "100vh" }}>
+      {/* Dashboard View */}
+      {showDashboard && (
+        <Paper sx={{ p: 7, borderRadius: 2, boxShadow: 3 }}>
+          <Typography variant="h5" gutterBottom fontWeight="bold">
+            <div className="text-center font-semibold text-3xl mb-8 text-[#1976d2] ">
+              Manage Events
+            </div>
+          </Typography>
 
-       {/* Edit Event Modal */}
-{editingEvent && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-      <h2 className="text-xl font-bold mb-4">Edit Event</h2>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
-            type="text"
-            value={editingEvent.name}
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#454849", color: "#2596be"  }}>
+                  <TableCell sx={{ color: "#fff" }}>Event Name</TableCell>
+                  <TableCell sx={{ color: "#fff" }}>Description</TableCell>
+                  <TableCell sx={{ color: "#fff" }}>Start Date</TableCell>
+                  <TableCell sx={{ color: "#fff" }}>End Date</TableCell>
+                  <TableCell sx={{ color: "#fff" }}>Actions</TableCell>
+                  <TableCell sx={{ color: "#fff" }}>Bookings</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {events.map((event) => (
+                  <TableRow key={event.id} hover>
+                    <TableCell>{event.name}</TableCell>
+                    <TableCell>{event.description}</TableCell>
+                    <TableCell>
+                      {new Date(event.startDate).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(event.endDate).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="Edit" arrow>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          sx={{ mr: 1 }}
+                          onClick={() => handleEdit(event)}
+                        >
+                          <FaEdit size={20} />
+                          <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            Edit
+                          </span>
+                        </Button>
+                      </Tooltip>
+                      <Tooltip title="Delete" arrow>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          size="small"
+                          onClick={() => handleDelete(event.id)}
+                        >
+                          <AiOutlineDelete size={20} />
+                        </Button>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="View" arrow >
+                        <Button
+                          variant="contained"
+                          color="success"
+                          size="small"
+                          onClick={() => handleViewBookings(event.id)}
+                        >
+                          <FaEye size={20} />
+                        </Button>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      )}
+
+      {/* Edit Dialog */}
+      <Dialog open={!!editingEvent} onClose={() => setEditingEvent(null)}>
+        <DialogTitle>Edit Event</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Name"
+            fullWidth
+            value={editingEvent?.name || ""}
             onChange={(e) =>
               setEditingEvent({ ...editingEvent, name: e.target.value })
             }
-            className="w-full border px-3 py-2 rounded"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Description</label>
-          <textarea
-            value={editingEvent.description || ""}
+          <TextField
+            margin="dense"
+            label="Description"
+            fullWidth
+            value={editingEvent?.description || ""}
             onChange={(e) =>
               setEditingEvent({ ...editingEvent, description: e.target.value })
             }
-            className="w-full border px-3 py-2 rounded"
-            rows={3}
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Start Date</label>
-          <input
+          <TextField
+            margin="dense"
+            label="Start Date"
             type="date"
-            value={editingEvent.startDate.split("T")[0]}
+            fullWidth
+            value={editingEvent?.startDate?.split("T")[0] || ""}
             onChange={(e) =>
               setEditingEvent({ ...editingEvent, startDate: e.target.value })
             }
-            className="w-full border px-3 py-2 rounded"
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">End Date</label>
-          <input
+          <TextField
+            margin="dense"
+            label="End Date"
             type="date"
-            value={editingEvent.endDate.split("T")[0]}
+            fullWidth
+            value={editingEvent?.endDate?.split("T")[0] || ""}
             onChange={(e) =>
               setEditingEvent({ ...editingEvent, endDate: e.target.value })
             }
-            className="w-full border px-3 py-2 rounded"
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
-
-        <div className="flex justify-end space-x-2">
-          <button
-            onClick={() => setEditingEvent(null)}
-            className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSaveEdit}
-            className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
-          >
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditingEvent(null)}>Cancel</Button>
+          <Button onClick={handleSaveEdit} variant="contained" color="success">
             Save
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
+      {/* Bookings View */}
+      {showBookings && (
+        <Paper sx={{ p: 3, mt: 4, borderRadius: 2, boxShadow: 3 }}>
+          <Typography variant="h5" gutterBottom fontWeight="bold">
+            User's Event Bookings
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mb: 2 }}
+            onClick={() => {
+              setShowDashboard(true);
+              setShowBookings(false);
+            }}
+          >
+            Back to Events
+          </Button>
 
-        {/* Bookings Table */}
-        {showBookings && (
-          <div className="bg-white p-4 rounded shadow mt-6">
-            <h2 className="text-2xl font-bold mb-4">User's Event Bookings</h2>
-            <button
-              className="mb-4 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-400"
-              onClick={() => {
-                setShowDashboard(true);
-                setShowBookings(false);
-              }}
-            >
-              Back to Events
-            </button>
-            <table className="w-full table-auto border-collapse">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border px-4 py-2">User Name</th>
-                  <th className="border px-4 py-2">Booking Date</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
+                  <TableCell>User Name</TableCell>
+                  <TableCell>Booking Date</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {selectedEventBookings.length > 0 ? (
                   selectedEventBookings.map((b) => (
-                    <tr key={b.id} className="border-b">
-                      <td className="border px-4 py-2">{b.userName}</td>
-                      <td className="border px-4 py-2">
+                    <TableRow key={b.id} hover>
+                      <TableCell>{b.userName}</TableCell>
+                      <TableCell>
                         {new Date(b.bookingDate).toLocaleDateString()}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))
                 ) : (
-                  <tr>
-                    <td
-                      colSpan={3}
-                      className="border px-4 py-2 text-center text-gray-500"
+                  <TableRow>
+                    <TableCell
+                      colSpan={2}
+                      align="center"
+                      sx={{ color: "gray" }}
                     >
                       No bookings yet
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </main>
-    </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      )}
+    </Box>
   );
 }
