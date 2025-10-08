@@ -78,17 +78,15 @@ export default function AdminLogin() {
     <div className="container flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
+      <div className="bg-blue-950/85 rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
         <div className="flex justify-center mb-5">
           <div className="bg-blue-100 p-3 rounded-full">
             <FaUserShield className="text-blue-600 text-2xl" />
           </div>
         </div>
 
-        <h1 className="text-xl font-semibold text-gray-800 mb-2">
-          Admin Portal
-        </h1>
-        <p className="text-sm text-gray-500 mb-6">Administrator Access Only</p>
+        <h1 className="text-xl font-semibold text-white mb-2">Admin Portal</h1>
+        <p className="text-sm text-white mb-6">Administrator Access Only</p>
 
         <Formik
           initialValues={{
@@ -105,7 +103,7 @@ export default function AdminLogin() {
                   type="text"
                   name="username"
                   placeholder="Admin Username"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white ${
                     errors.username && touched.username
                       ? "border-red-500"
                       : "border-gray-300"
@@ -123,7 +121,7 @@ export default function AdminLogin() {
                   type="password"
                   name="password"
                   placeholder="Admin Password"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white ${
                     errors.password && touched.password
                       ? "border-red-500"
                       : "border-gray-300"
@@ -140,7 +138,7 @@ export default function AdminLogin() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+                className="bg-gradient-to-r from-slate-450 to-gray-950 hover:border-2 border-slate-200  text-white font-semibold py-2 px-4 rounded hover:opacity-60 cursor-pointer transition duration-300"
                 disabled={loading || isSubmitting}
               >
                 {loading ? "Signing in..." : "Admin Login"}
@@ -150,11 +148,11 @@ export default function AdminLogin() {
         </Formik>
 
         <div className="mt-6 text-sm">
-          <p className="text-gray-600">
+          <p className="text-white">
             Not an admin?{" "}
             <a
               href="/userlogin"
-              className="text-blue-500 hover:text-blue-600 font-medium"
+              className="text-white font-medium"
             >
               User Login
             </a>

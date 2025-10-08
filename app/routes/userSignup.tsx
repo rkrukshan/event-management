@@ -38,12 +38,11 @@ export default function UserSignup() {
       }
 
       toast.success("Signup Success", { transition: Bounce });
-      
+
       // Navigate to book page after successful signup
       setTimeout(() => {
         navigate("/book");
       }, 1000);
-      
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Signup Failed";
       toast.error(errorMessage, { transition: Bounce });
@@ -71,17 +70,17 @@ export default function UserSignup() {
     <div className="container flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
+      <div className="bg-blue-950/85 rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
         <div className="flex justify-center mb-5">
           <div className="bg-blue-100 p-3 rounded-full">
             <FaUserPlus className="text-blue-600 text-2xl" />
           </div>
         </div>
 
-        <h1 className="text-xl font-semibold text-gray-800 mb-2">
+        <h1 className="text-xl font-semibold text-white mb-2">
           Event Management User
         </h1>
-        <p className="text-sm text-gray-500 mb-6">Create your account.</p>
+        <p className="text-sm text-white mb-6">Create your account.</p>
 
         <Formik
           initialValues={{
@@ -99,7 +98,7 @@ export default function UserSignup() {
                   type="text"
                   name="username"
                   placeholder="Username"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white ${
                     errors.username && touched.username
                       ? "border-red-500"
                       : "border-gray-300"
@@ -117,7 +116,7 @@ export default function UserSignup() {
                   type="password"
                   name="password"
                   placeholder="Password"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white ${
                     errors.password && touched.password
                       ? "border-red-500"
                       : "border-gray-300"
@@ -135,7 +134,7 @@ export default function UserSignup() {
                   type="password"
                   name="confirmPassword"
                   placeholder="Confirm Password"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white ${
                     errors.confirmPassword && touched.confirmPassword
                       ? "border-red-500"
                       : "border-gray-300"
@@ -152,7 +151,7 @@ export default function UserSignup() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+                className="bg-gradient-to-r from-slate-450 to-gray-950 hover:border-2 border-slate-200  text-white font-semibold py-2 px-4 rounded hover:opacity-60 cursor-pointer transition duration-300"
                 disabled={loading || isSubmitting}
               >
                 {loading ? "Signing up..." : "Sign Up"}
@@ -162,12 +161,9 @@ export default function UserSignup() {
         </Formik>
 
         <div className="mt-6 text-sm">
-          <p className="text-gray-600">
+          <p className="text-white font-medium">
             Already have an account?{" "}
-            <a
-              href="/userlogin"
-              className="text-blue-500 hover:text-blue-600 font-medium"
-            >
+            <a href="/userlogin" className="text-white font-medium">
               Login
             </a>
           </p>
