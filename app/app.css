@@ -23,5 +23,5 @@
 }
 
 .btn{
-  @apply bg-background-to-r from-blue-100 to-red-950;
+  @apply bg-gradient-to-r from-blue-100 to-red-950;
 }
